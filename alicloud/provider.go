@@ -579,6 +579,7 @@ func Provider() terraform.ResourceProvider {
 			"alicloud_cen_bandwidth_limit":                        resourceAlicloudCenBandwidthLimit(),
 			"alicloud_cen_route_entry":                            resourceAlicloudCenRouteEntry(),
 			"alicloud_cen_instance_grant":                         resourceAlicloudCenInstanceGrant(),
+			"alicloud_cen_transit_router":                         resourceAlicloudCenTransitRouter(),
 			"alicloud_cen_transit_router_vpc_attachment":          resourceAlicloudCenTransitRouterVpcAttachment(),
 			"alicloud_kvstore_instance":                           resourceAlicloudKvstoreInstance(),
 			"alicloud_kvstore_backup_policy":                      resourceAlicloudKVStoreBackupPolicy(),
