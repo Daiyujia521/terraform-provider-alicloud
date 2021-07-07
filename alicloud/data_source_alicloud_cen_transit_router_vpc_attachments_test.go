@@ -1,8 +1,8 @@
 package alicloud
 
 import (
-	"demo/cen/terraform-provider-alicloud/alicloud/connectivity"
 	"fmt"
+	"github.com/aliyun/terraform-provider-alicloud/alicloud/connectivity"
 	"strings"
 	"testing"
 
