@@ -2,6 +2,7 @@ package alicloud
 
 import (
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"log"
 	"time"
 
@@ -31,19 +32,21 @@ func resourceAlicloudCenTransitRouterVpcAttachment() *schema.Resource {
 				Required: true,
 				ForceNew: true,
 			},
-			"charge_type": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
+			"payment_type": {
+				Type:         schema.TypeString,
+				Optional:     true,
+				ForceNew:     true,
+				Computed:     true,
+				ValidateFunc: validation.StringInSlice([]string{"PayAsYouGo"}, false),
 			},
 			"dry_run": {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
 			"resource_type": {
-				Type:     schema.TypeString,
-				Optional: true,
-				Default:  "VPC",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Default: "VPC",
 			},
 			"route_table_association_enabled": {
 				Type:     schema.TypeBool,
@@ -82,12 +85,13 @@ func resourceAlicloudCenTransitRouterVpcAttachment() *schema.Resource {
 				ForceNew: true,
 			},
 			"vpc_owner_id": {
-				Type:     schema.TypeInt,
+				Type:     schema.TypeString,
 				Optional: true,
+				Computed: true,
 				ForceNew: true,
 			},
 			"zone_mappings": {
-				Type:     schema.TypeSet,
+				Type:     schema.TypeList,
 				Required: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -124,8 +128,8 @@ func resourceAlicloudCenTransitRouterVpcAttachmentCreate(d *schema.ResourceData,
 	}
 	request["CenId"] = d.Get("cen_id")
 
-	if v, ok := d.GetOk("charge_type"); ok {
-		request["ChargeType"] = v
+	if v, ok := d.GetOk("payment_type"); ok {
+		request["ChargeType"] = convertCenTransitRouterVpcAttachmentPaymentTypeRequest(v)
 	}
 
 	if v, ok := d.GetOkExists("dry_run"); ok {
@@ -163,7 +167,7 @@ func resourceAlicloudCenTransitRouterVpcAttachmentCreate(d *schema.ResourceData,
 	}
 
 	zoneMappingsMaps := make([]map[string]interface{}, 0)
-	for _, zoneMappings := range d.Get("zone_mappings").(*schema.Set).List() {
+	for _, zoneMappings := range d.Get("zone_mappings").([]interface{}) {
 		zoneMappingsMap := make(map[string]interface{})
 		zoneMappingsArg := zoneMappings.(map[string]interface{})
 		zoneMappingsMap["VSwitchId"] = zoneMappingsArg["vswitch_id"]
@@ -218,7 +222,7 @@ func resourceAlicloudCenTransitRouterVpcAttachmentRead(d *schema.ResourceData, m
 	d.Set("transit_router_attachment_name", object["TransitRouterAttachmentName"])
 	d.Set("transit_router_attachment_id", object["TransitRouterAttachmentId"])
 	d.Set("vpc_id", object["VpcId"])
-	d.Set("vpc_owner_id", object["VpcOwnerId"])
+	d.Set("vpc_owner_id", fmt.Sprint(object["VpcOwnerId"]))
 
 	zoneMappings := make([]map[string]interface{}, 0)
 	if zoneMappingsList, ok := object["ZoneMappings"].([]interface{}); ok {
@@ -338,4 +342,12 @@ func resourceAlicloudCenTransitRouterVpcAttachmentDelete(d *schema.ResourceData,
 		return WrapErrorf(err, IdMsg, d.Id())
 	}
 	return nil
+}
+
+func convertCenTransitRouterVpcAttachmentPaymentTypeRequest(source interface{}) interface{} {
+	switch source {
+	case "PayAsYouGo":
+		return "POSTPAY"
+	}
+	return source
 }

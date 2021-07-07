@@ -77,7 +77,7 @@ func dataSourceAlicloudCenTransitRouterVpcAttachments() *schema.Resource {
 							Computed: true,
 						},
 						"vpc_owner_id": {
-							Type:     schema.TypeInt,
+							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"zone_mappings": {
@@ -98,11 +98,6 @@ func dataSourceAlicloudCenTransitRouterVpcAttachments() *schema.Resource {
 						},
 					},
 				},
-			},
-			"enable_details": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
 			},
 		},
 	}
@@ -190,7 +185,8 @@ func dataSourceAlicloudCenTransitRouterVpcAttachmentsRead(d *schema.ResourceData
 			"transit_router_attachment_id":          fmt.Sprint(object["TransitRouterAttachmentId"]),
 			"transit_router_attachment_name":        object["TransitRouterAttachmentName"],
 			"vpc_id":                                object["VpcId"],
-			"vpc_owner_id":                          formatInt(object["VpcOwnerId"]),
+			"vpc_owner_id":                          fmt.Sprint(object["VpcOwnerId"]),
+			"resource_type":                          object["ResourceType"],
 		}
 
 		zoneMappings := make([]map[string]interface{}, 0)
@@ -206,19 +202,6 @@ func dataSourceAlicloudCenTransitRouterVpcAttachmentsRead(d *schema.ResourceData
 			}
 		}
 		mapping["zone_mappings"] = zoneMappings
-		if detailedEnabled := d.Get("enable_details"); !detailedEnabled.(bool) {
-			ids = append(ids, fmt.Sprint(object["TransitRouterAttachmentId"]))
-			s = append(s, mapping)
-			continue
-		}
-
-		cbnService := CbnService{client}
-		id := fmt.Sprintf("%v:%v", request["CenId"], object["TransitRouterAttachmentId"])
-		getResp, err := cbnService.DescribeCenTransitRouterVpcAttachment(id)
-		if err != nil {
-			return WrapError(err)
-		}
-		mapping["resource_type"] = getResp["ResourceType"]
 		ids = append(ids, fmt.Sprint(object["TransitRouterAttachmentId"]))
 		s = append(s, mapping)
 	}

@@ -1,6 +1,7 @@
 package alicloud
 
 import (
+	"demo/cen/terraform-provider-alicloud/alicloud/connectivity"
 	"fmt"
 	"strings"
 	"testing"
@@ -43,8 +44,9 @@ func TestAccAlicloudCenTransitRouterVpcAttachmentsDataSource(t *testing.T) {
 			"ids.#":         "1",
 			"attachments.#": "1",
 			"attachments.0.transit_router_attachment_description": `descp`,
-			"attachments.0.transit_router_attachment_name":        `name`,
+			"attachments.0.transit_router_attachment_name":        fmt.Sprintf("tf-testAccDataTransitRouterVpcAttachment-%d", rand),
 			"attachments.0.vpc_id":                                CHECKSET,
+			"attachments.0.resource_type":                         "VPC",
 			"attachments.0.vpc_owner_id":                          CHECKSET,
 			"attachments.0.zone_mappings.0.vswitch_id":            CHECKSET,
 			"attachments.0.zone_mappings.0.zone_id":               `cn-hangzhou-h`,
@@ -63,7 +65,11 @@ func TestAccAlicloudCenTransitRouterVpcAttachmentsDataSource(t *testing.T) {
 		existMapFunc: existAlicloudCenTransitRouterVpcAttachmentsDataSourceNameMapFunc,
 		fakeMapFunc:  fakeAlicloudCenTransitRouterVpcAttachmentsDataSourceNameMapFunc,
 	}
-	alicloudCenTransitRouterVpcAttachmentsCheckInfo.dataSourceTestCheck(t, rand, idsConf, statusConf, allConf)
+	preCheck := func() {
+		testAccPreCheck(t)
+		testAccPreCheckWithRegions(t, true, connectivity.CenTransitRouterVpcAttachmentSupportRegions)
+	}
+	alicloudCenTransitRouterVpcAttachmentsCheckInfo.dataSourceTestCheckWithPreCheck(t, rand, preCheck, idsConf, statusConf, allConf)
 }
 func testAccCheckAlicloudCenTransitRouterVpcAttachmentsDataSourceName(rand int, attrMap map[string]string) string {
 	var pairs []string
@@ -118,11 +124,10 @@ resource "alicloud_cen_transit_router_vpc_attachment" "default" {
     vswitch_id = alicloud_vswitch.default_slave.id
   }
   transit_router_attachment_description = "descp"
-  transit_router_attachment_name = "name"
+  transit_router_attachment_name = var.name
 }
 
 data "alicloud_cen_transit_router_vpc_attachments" "default" {	
-	enable_details = true
 	cen_id = alicloud_cen_instance.default.id
 	%s	
 }

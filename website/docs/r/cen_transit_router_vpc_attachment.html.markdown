@@ -9,15 +9,15 @@ Provides a Alicloud CEN transit router VPC attachment resource.
 
 # alicloud\_cen_transit_router_vpc_attachment
 
-Provides a CEN transit router VPC attachment resource that associate the VPC with the CEN instance.
+Provides a CEN transit router VPC attachment resource that associate the VPC with the CEN instance. [What is Transit Router VPC Attachment](https://help.aliyun.com/document_detail/261358.html)
 
--> **NOTE:** Available in 1.125.0+
+-> **NOTE:** Available in 1.126.0+
 
 ## Example Usage
 
 Basic Usage
 
-```
+```terraform
 variable "transit_router_attachment_name" {
   default = "sdk_rebot_cen_tr_yaochi"
 }
@@ -77,12 +77,28 @@ resource "alicloud_cen_transit_router_vpc_attachment" "default" {
 
 The following arguments are supported:
 
-* `vpc_id` - (Required, ForceNew) The ID of the VPC.
+* `auto_create_vpc_route` - (Optional, ForceNew) Whether to create vpc route automatically. The system default value is `true`.
+* `dry_run` - (Optional,ForceNew) The dry run.
 * `cen_id` - (Optional, ForceNew) The ID of the CEN.
+* `vpc_id` - (Required, ForceNew) The ID of the VPC.
 * `transit_router_id` - (Optional, ForceNew) The ID of the transit router.
-* `zone_mapping` - (Required, ForceNew) The list of zone mapping of the VPC.
 * `transit_router_attachment_name` - (Optional) The name of the transit router vbr attachment.
 * `transit_router_attachment_description` - (Optional) The description of the transit router vbr attachment.
+* `payment_type` - (Optional, ForceNew) The payment type of transit router vpc attachment. Valid value `PayAsYouGo`. Default value is `PayAsYouGo`.
+* `resource_type` - (Optional,ForceNew) The resource type of transit router vpc attachment. Valid value `VPC`. Default value is `VPC`.
+* `route_table_association_enabled` - (Optional,ForceNew) Whether to enabled route table association. The system default value is `true`.
+* `route_table_propagation_enabled` - (Optional,ForceNew) Whether to enabled route table propagation. The system default value is `true`.
+* `vpc_owner_id` - (Optional,ForceNew) The owner id of vpc.
+* `zone_mapping` - (Required, ForceNew) The list of zone mapping of the VPC.
+
+-> **NOTE:** [API](http)
+
+#### ZoneMapping Block
+
+The `zone_mapping` supports the following:
+
+* `vswitch_id` - (Optional, ForceNew) The VSwitch id of attachment.
+* `zone_id` - (Optional, ForceNew) The zone Id of VSwitch.
 
 ## Attributes Reference
 
@@ -90,6 +106,7 @@ The following attributes are exported:
 
 * `id` - ID of the resource, It is formatted to `<transit_router_id>:<transit_router_attachment_id>`.
 * `status` - The associating status of the network.
+* `transit_router_attachment_id` - The ID of transit router attachment. 
 
 ## Import
 

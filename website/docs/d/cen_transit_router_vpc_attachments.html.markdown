@@ -11,14 +11,13 @@ Provides a list of CEN Transit Router VPC Attachments owned by an Alibaba Cloud 
 
 This data source provides CEN Transit Router VPC Attachments available to the user.
 
--> **NOTE:** Available in 1.125.0+
+-> **NOTE:** Available in 1.126.0+
 
 ## Example Usage
 
 ```
 data "alicloud_cen_transit_router_vpc_attachments" "default" {
   cen_id    = "cen-id1"
-  region_id = "cn-****"
 }
 
 output "first_transit_router_vpc_attachments_transit_router_attachment_vpc_id" {
@@ -31,8 +30,9 @@ output "first_transit_router_vpc_attachments_transit_router_attachment_vpc_id" {
 The following arguments are supported:
 
 * `cen_id` - (Required) ID of the CEN instance.
-* `region_id` - (Optional) Region ID of the VPC.
-* `resource_type` - (Optional) Type of the resource.
+* `ids` - (Optional) A list of resource id. The element value is same as `transit_router_id`.
+* `status` - (Optional) The status of the resource. Valid values `Attached`, `Attaching` and `Detaching`.
+* `transit_router_id` - (Optional) The transit router ID.
 * `output_file` - (Optional) File name where to save data source results (after running `terraform plan`).
 
 ## Attributes Reference
@@ -43,11 +43,12 @@ The following attributes are exported in addition to the arguments listed above:
     * `transit_router_attachment_id` - ID of the transit router attachment.
     * `transit_router_attachment_name` - Name of the transit router attachment.
     * `resource_type` - Type of the resource.
+    * `transit_router_attachment_description` - The description of transit router attachment.
     * `status` - The status of the transit router attachment.
-    * `creation_time` - The time when it's created.
-    * `vpc_id` - ID of the VPC.      
+    * `vpc_id` - ID of the VPC.
+    * `id` -  The ID of the transit route.
     * `vpc_owner_id` - The Owner ID of the VPC.     
     * `transit_router_id` - ID of the transit router.
-    * `vpc_region_id` - ID of the region where the conflicted VPC is located.
-    * `auto_publish_route_enabled` - ID of the region where the conflicted VBR is located.
-
+    * `zone_mappings` - The mappings of zone
+        * `vswitch_id` - The VSwitch ID.
+        * `zone_id` - The zone ID.
