@@ -15,7 +15,7 @@ func TestAccAlicloudCenTransitRouterPeerAttachmentsDataSource(t *testing.T) {
 			"ids": `["${alicloud_cen_transit_router_peer_attachment.default.transit_router_attachment_id}"]`,
 		}),
 		fakeConfig: testAccCheckAlicloudCenTransitRouterPeerAttachmentsDataSourceName(rand, map[string]string{
-			"ids": `["${alicloud_cen_transit_router_peer_attachment.default.transit_router_attachment_id}"]`,
+			"ids": `["${alicloud_cen_transit_router_peer_attachment.default.transit_router_attachment_id}_fake"]`,
 		}),
 	}
 	transitRouterIdConf := dataSourceTestAccConfig{

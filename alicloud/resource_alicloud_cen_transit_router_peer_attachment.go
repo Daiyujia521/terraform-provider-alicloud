@@ -194,6 +194,7 @@ func resourceAlicloudCenTransitRouterPeerAttachmentRead(d *schema.ResourceData, 
 	d.Set("status", object["Status"])
 	d.Set("transit_router_attachment_description", object["TransitRouterAttachmentDescription"])
 	d.Set("transit_router_attachment_name", object["TransitRouterAttachmentName"])
+	d.Set("transit_router_attachment_id", object["TransitRouterAttachmentId"])
 	d.Set("transit_router_id", object["TransitRouterId"])
 	return nil
 }
