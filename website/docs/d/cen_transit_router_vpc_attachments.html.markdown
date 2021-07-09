@@ -21,7 +21,7 @@ data "alicloud_cen_transit_router_vpc_attachments" "default" {
 }
 
 output "first_transit_router_vpc_attachments_transit_router_attachment_vpc_id" {
-  value = "${data.alicloud_cen_transit_router_vpc_attachments.default.transit_router_attachments.0.vpc_id}"
+  value = data.alicloud_cen_transit_router_vpc_attachments.default.transit_router_attachments.0.vpc_id
 }
 ```
 

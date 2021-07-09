@@ -21,7 +21,7 @@ data "alicloud_cen_transit_routers" "default" {
 }
 
 output "first_transit_routers_type" {
-  value = "${data.alicloud_cen_transit_routers.default.transit_routers.0.type}"
+  value = data.alicloud_cen_transit_routers.default.transit_routers.0.type
 }
 ```
 

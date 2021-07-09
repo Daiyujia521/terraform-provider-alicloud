@@ -56,7 +56,7 @@ func SkipTestAccAlicloudCenTransitRouterVbrAttachment_basic(t *testing.T) {
 				ResourceName:            resourceId,
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"cen_id", "dry_run", "resource_type", "route_table_association_enabled", "route_table_propagation_enabled", "transit_router_id"},
+				ImportStateVerifyIgnore: []string{"cen_id", "dry_run", "resource_type", "route_table_association_enabled", "route_table_propagation_enabled"},
 			},
 			{
 				Config: testAccConfig(map[string]interface{}{

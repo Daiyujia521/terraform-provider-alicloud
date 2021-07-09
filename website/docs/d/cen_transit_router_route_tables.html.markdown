@@ -21,7 +21,7 @@ data "alicloud_cen_transit_router_route_tables" "entry" {
 }
 
 output "first_transit_router_route_table_type"" {
-  value = "${data.alicloud_cen_transit_router_route_tables.tables.0.transit_router_route_table_type}"
+  value = data.alicloud_cen_transit_router_route_tables.tables.0.transit_router_route_table_type
 }
 ```
 

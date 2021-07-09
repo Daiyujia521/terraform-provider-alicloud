@@ -2,6 +2,7 @@ package alicloud
 
 import (
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/validation"
 	"log"
 	"time"
 
@@ -53,9 +54,10 @@ func resourceAlicloudCenTransitRouterRouteEntry() *schema.Resource {
 				ForceNew: true,
 			},
 			"transit_router_route_entry_next_hop_type": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:         schema.TypeString,
+				Required:     true,
+				ForceNew:     true,
+				ValidateFunc: validation.StringInSlice([]string{"Attachment", "BlackHole"}, false),
 			},
 			"transit_router_route_table_id": {
 				Type:     schema.TypeString,

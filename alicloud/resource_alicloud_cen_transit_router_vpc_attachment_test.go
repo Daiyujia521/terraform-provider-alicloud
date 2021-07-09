@@ -67,7 +67,7 @@ func TestAccAlicloudCenTransitRouterVpcAttachment_basic(t *testing.T) {
 				ResourceName:            resourceId,
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"auto_create_vpc_route", "cen_id", "payment_type", "dry_run", "route_table_association_enabled", "route_table_propagation_enabled", "transit_router_id"},
+				ImportStateVerifyIgnore: []string{"auto_create_vpc_route", "payment_type", "dry_run", "route_table_association_enabled", "route_table_propagation_enabled"},
 			},
 			{
 				Config: testAccConfig(map[string]interface{}{

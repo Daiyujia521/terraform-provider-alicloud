@@ -21,7 +21,7 @@ data "alicloud_cen_transit_router_route_table_propagations" "default" {
 }
 
 output "first_transit_router_peer_attachments_transit_router_attachment_resource_type" {
-  value = "${data.alicloud_cen_transit_router_route_table_propagations.default.propagations.0.resource_type}"
+  value = data.alicloud_cen_transit_router_route_table_propagations.default.propagations.0.resource_type
 }
 ```
 

@@ -48,7 +48,7 @@ func TestAccAlicloudCenTransitRouterRouteTable_basic(t *testing.T) {
 				ResourceName:            resourceId,
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"dry_run", "transit_router_id"},
+				ImportStateVerifyIgnore: []string{"dry_run"},
 			},
 			{
 				Config: testAccConfig(map[string]interface{}{

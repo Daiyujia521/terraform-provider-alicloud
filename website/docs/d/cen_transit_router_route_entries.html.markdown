@@ -21,7 +21,7 @@ data "alicloud_cen_transit_router_route_entries" "entry" {
 }
 
 output "transit_router_route_entry_destination_cidr_block"" {
-  value = "${data.alicloud_cen_transit_router_route_entries.transit_router_route_entries.0.transit_router_route_entry_destination_cidr_block}"
+  value = data.alicloud_cen_transit_router_route_entries.transit_router_route_entries.0.transit_router_route_entry_destination_cidr_block
 }
 ```
 
