@@ -20,6 +20,11 @@ func resourceAlicloudCenTransitRouterPeerAttachment() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
+		Timeouts: &schema.ResourceTimeout{
+			Create: schema.DefaultTimeout(3 * time.Minute),
+			Delete: schema.DefaultTimeout(3 * time.Minute),
+			Update: schema.DefaultTimeout(3 * time.Minute),
+		},
 		Schema: map[string]*schema.Schema{
 			"auto_publish_route_enabled": {
 				Type:     schema.TypeBool,

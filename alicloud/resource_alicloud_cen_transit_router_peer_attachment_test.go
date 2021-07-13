@@ -158,7 +158,7 @@ variable "name" {
 
 provider "alicloud" {
   alias = "other_region_id"
-  region = var.peer_transit_router_region_id
+  region = "us-east-1"
 }
 
 resource "alicloud_cen_instance" "default" {
