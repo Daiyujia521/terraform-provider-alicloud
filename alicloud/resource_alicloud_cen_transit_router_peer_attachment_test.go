@@ -32,13 +32,13 @@ func TestAccAlicloudCenTransitRouterPeerAttachment_basic(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccConfig(map[string]interface{}{
-					"cen_id":                                "cen-f6rslz7pzbnj8sshxc",
-					"transit_router_id":                     "tr-bp1p0oqyc5iv22yjpymgu",
+					"cen_id":                                "${alicloud_cen_instance.default.id}",
+					"transit_router_id":                     "${alicloud_cen_transit_router.default_0.transit_router_id}",
 					"peer_transit_router_region_id":         "us-east-1",
-					"peer_transit_router_id":                "${alicloud_cen_transit_router.default.transit_router_id}",
+					"peer_transit_router_id":                "${alicloud_cen_transit_router.default_1.transit_router_id}",
 					"cen_bandwidth_package_id":              "cenbwp-buw65zk0606xh0ukvd",
 					"bandwidth":                             "2",
-					"transit_router_attachment_description": name,
+					"transit_router_attachment_description": "tf-test",
 					"transit_router_attachment_name":        name,
 				}),
 				Check: resource.ComposeTestCheckFunc(
@@ -49,7 +49,7 @@ func TestAccAlicloudCenTransitRouterPeerAttachment_basic(t *testing.T) {
 						"peer_transit_router_region_id":         "us-east-1",
 						"cen_bandwidth_package_id":              "cenbwp-buw65zk0606xh0ukvd",
 						"bandwidth":                             "2",
-						"transit_router_attachment_description": name,
+						"transit_router_attachment_description": "tf-test",
 						"transit_router_attachment_name":        name,
 					}),
 				),
@@ -58,7 +58,7 @@ func TestAccAlicloudCenTransitRouterPeerAttachment_basic(t *testing.T) {
 				ResourceName:            resourceId,
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"cen_id", "dry_run", "route_table_association_enabled", "route_table_propagation_enabled"},
+				ImportStateVerifyIgnore: []string{"dry_run", "route_table_association_enabled", "route_table_propagation_enabled"},
 			},
 			{
 				Config: testAccConfig(map[string]interface{}{
@@ -102,11 +102,11 @@ func TestAccAlicloudCenTransitRouterPeerAttachment_basic(t *testing.T) {
 			},
 			{
 				Config: testAccConfig(map[string]interface{}{
-					"transit_router_attachment_name": "name1",
+					"transit_router_attachment_name": name,
 				}),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheck(map[string]string{
-						"transit_router_attachment_name": "name1",
+						"transit_router_attachment_name": name + "update",
 					}),
 				),
 			},
@@ -116,7 +116,7 @@ func TestAccAlicloudCenTransitRouterPeerAttachment_basic(t *testing.T) {
 					"bandwidth":                             `2`,
 					"cen_bandwidth_package_id":              "cenbwp-buw65zk0606xh0ukvd",
 					"transit_router_attachment_description": "desp",
-					"transit_router_attachment_name":        "name",
+					"transit_router_attachment_name":        name,
 				}),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheck(map[string]string{
@@ -124,7 +124,7 @@ func TestAccAlicloudCenTransitRouterPeerAttachment_basic(t *testing.T) {
 						"bandwidth":                             "2",
 						"cen_bandwidth_package_id":              "cenbwp-buw65zk0606xh0ukvd",
 						"transit_router_attachment_description": "desp",
-						"transit_router_attachment_name":        "name",
+						"transit_router_attachment_name":        name,
 					}),
 				),
 			},
@@ -156,14 +156,34 @@ variable "name" {
 	default = "%s"
 }
 
-resource "alicloud_cen_transit_router" "default" {
-  cen_id = "cen-f6rslz7pzbnj8sshxc"
+provider "alicloud" {
+  alias = "other_region_id"
+  region = var.peer_transit_router_region_id
+}
+
+resource "alicloud_cen_instance" "default" {
+  name = var.name
+  protection_level = "REDUCED"
 }
 
 resource "alicloud_cen_bandwidth_package_attachment" "default" {
-  instance_id        = "cen-f6rslz7pzbnj8sshxc"
+  instance_id        = alicloud_cen_instance.default.id
   bandwidth_package_id = "cenbwp-buw65zk0606xh0ukvd"
-  depends_on = [alicloud_cen_transit_router.default]
+  depends_on = [
+    alicloud_cen_instance.default]
+}
+
+resource "alicloud_cen_transit_router" "default_0" {
+  cen_id = alicloud_cen_instance.default.id
+  depends_on = [
+    alicloud_cen_bandwidth_package_attachment.default]
+}
+
+resource "alicloud_cen_transit_router" "default_1" {
+  provider = alicloud.other_region_id
+  cen_id = alicloud_cen_instance.default.id
+  depends_on = [
+    alicloud_cen_transit_router.default_0]
 }
 
 `, name)

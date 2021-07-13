@@ -185,6 +185,10 @@ func resourceAlicloudCenTransitRouterPeerAttachmentRead(d *schema.ResourceData, 
 		}
 		return WrapError(err)
 	}
+	parts, err1 := ParseResourceId(d.Id(), 2)
+	if err1 != nil {
+		return WrapError(err1)
+	}
 	d.Set("auto_publish_route_enabled", object["AutoPublishRouteEnabled"])
 	d.Set("bandwidth", formatInt(object["Bandwidth"]))
 	d.Set("cen_bandwidth_package_id", object["CenBandwidthPackageId"])
@@ -196,6 +200,7 @@ func resourceAlicloudCenTransitRouterPeerAttachmentRead(d *schema.ResourceData, 
 	d.Set("transit_router_attachment_name", object["TransitRouterAttachmentName"])
 	d.Set("transit_router_attachment_id", object["TransitRouterAttachmentId"])
 	d.Set("transit_router_id", object["TransitRouterId"])
+	d.Set("cen_id", parts[0])
 	return nil
 }
 func resourceAlicloudCenTransitRouterPeerAttachmentUpdate(d *schema.ResourceData, meta interface{}) error {
